@@ -18,7 +18,7 @@ else
     # Get image title (for path)
     ISO_NAME=`isoinfo -d -i $1 | awk 'FNR == 3 {print $3}'`
 
-    echo "$1 is not mounted, mounting $1..."
+    echo "$1 is not mounted, mounting..."
     echo "...creating directory $MOUNT_BASE/$ISO_NAME"
     mkdir $MOUNT_BASE/$ISO_NAME
     mount -o loop $1 $MOUNT_BASE/$ISO_NAME
