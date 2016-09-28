@@ -1,11 +1,11 @@
 #!/bin/bash
-set -ex # paranoid
+#set -ex # paranoid
 #.....................
 # Matthew's Photo Import Tool
 #
 # Configuration File: 
 # stuff
-configFile=~/.config/importphotorc
+configFile=~/.config/importphotosrc 
 
 # Execution Plan
 #  Parse command line
@@ -17,20 +17,21 @@ configFile=~/.config/importphotorc
 #  --- Time based (but handle out-of-order filenames!)
 #  --- Sort based on time w/in day
 #  --- What if there are some destination day files already in destination!
-#  - Determine move type:
+#  Determine move type:
 #  -- Copy to library (default)
 #  -- Move to library (require switch)
 #  -- Rename in place (discover but display message, require switch)
-#  - Display statistics to user, request confirmation (suppores w/ flag)
-#  - Execute move type
+#  Display statistics to user, request confirmation (suppores w/ flag)
+#  Execute move type
 #  -- Secure move! MD5Sum prior/post move? Other?
 #  -- Display progress
 #  -- Handle conflicts (PARANOID)
-#  - Cloud backup of files (if configured, also skippable via command line)
+#  Cloud backup of files (if configured, also skippable via command line)
 #  -- Cloud backup could be run in parallel to move????
-#  - Write log
-#  - Display final results
+#  Write log
+#  Display final results
 
+#  Parse command line
 function parse_commands {
     echo "Reading arguments"
     # ... Handle Arguments ...
@@ -79,15 +80,54 @@ function parse_commands {
     done
 }
 
+#  Parse configuration file
 function read_config {
     echo "Reading configuration file"
     if [ -s $configFile ]; then
-        . $configFile
+        source $configFile
     fi
 }
 
+#  Prepare list of input files
+#  - Extract metadata for filenames
+#  - Build new filenames per name scheme
+#  -- How to generate repeatable, consistent sequence #s
+#  --- Time based (but handle out-of-order filenames!)
+#  --- Sort based on time w/in day
+#  --- What if there are some destination day files already in destination!
 function read_input_directory {
     echo "Gathering files"
+
+    if [ ! -d "$1" ]; then
+        echo "read_input_directory: invalid directory"
+    fi
+
+    # glob files in the dirctory
+    shopt -s nullglob
+    dirfiles=("${1}/*")
+
+    # process each file into an array
+    for i in ${dirfiles[@]}; do
+        util_split_filepath $i
+
+        if [[ "$sidecar_exts" =~ $input_extension ]]; then
+            # a sidecar, skip
+            continue
+        fi
+
+        echo "processing ${i}"
+        
+    done
+}
+
+# Test for XMP sidecar
+function locate_sidecar_files {
+#    echo "Finding Sidecars"
+    unset located_sidecar
+    if [ -s "$1.xmp" ]; then
+        echo "XMP Sidecar Located";
+        located_sidecar="$1.xmp"
+    fi
 }
 
 function read_file_metadata {
@@ -103,6 +143,10 @@ function read_file_metadata {
 }
 
 function util_split_filepath {
+    unset input_directory
+    unset input_filename
+    unset input_extension
+
     if [ -z "$1" ]; then
         echo "util_split_filepath passed empty path!"
         return 1
@@ -130,21 +174,9 @@ function build_action_list {
 
 parse_commands $@ 
 read_config
+read_input_directory $input_directory
 # Get current file path & name
-iFileName=$(basename "${infilename}")
-iFileName_Ext="${infilename##*.}"
-iFileName_Base="${infilename%.*}"
 
-echo "filename: $iFileName iFileName_Ext: $iFileName_Ext, iFileName_Base: $iFileName_Base"
-
-# Test for XMP sidecar
-
-echo "Looking for sidecar $inFile.xmp"
-
-if [ -s "$inFile.xmp" ]; then
-    echo "XMP Sidecar Located";
-    inFileXmp="$inFile.xmp"
-fi
 
 
 # File Time:
