@@ -1,5 +1,16 @@
 #!/bin/bash
+#
+# This is a rather minimal example Argbash potential
+# Example taken from http://argbash.readthedocs.io/en/stable/example.html
+#
+# ARG_OPTIONAL_SINGLE([output_file], [o], [Output Video file name])
+# ARG_POSITIONAL_SINGLE([input_file], [Input Video], )
+# ARG_HELP([The general script's help msg])
+# ARGBASH_GO
 
+# [ <-- needed because of Argbash
+
+# Main script
 # Do magical video stabilization using vid.stab and ffmpeg
 
 #### Sauces ####
@@ -10,6 +21,11 @@
 # ffmpeg manual, vidstabtransform = http://www.ffmpeg.org/ffmpeg-filters.html#vidstabtransform-1
 # ffmpeg manual, unsharp filter = http://www.ffmpeg.org/ffmpeg-filters.html#unsharp
 
+# Execution patterns:
+# 1. Single file mode; input -> output
+#   
+# 2. Folder Mode; inputdir -> process all -> output
+# 3. Playlist mode?; inputList -> Load and process -> outputs
 
 #### Steps to Magic ####
 # 1. Read video and generate transforms file (vidstabdetect) - phase 1
@@ -114,3 +130,6 @@ OUTPUT_VIDEO=$2
 
 echo "Assembled Phase 1 Command: ffmpeg -i $INPUT_VIDEO -vf vidstabdetect=$VIDSTAB_PHASE1_OPTS -f null -"
 echo "Assembled Phase 2 Command: ffmpeg -i $INPUT_VIDEO -vf vidstabtransform=$VIDSTAB_PHASE2_OPTS,unsharp=$UNSHARP_OPTS $EXTRA_FFMPEG_FLAGS $OUTPUT_VIDEO"
+
+# ] <-- needed because of Argbash
+
