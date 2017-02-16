@@ -1,4 +1,5 @@
 set nocompatible                                           
+filetype off
 set t_Co=16                                                
 call pathogen#infect()                                     
 syntax on                                                  
