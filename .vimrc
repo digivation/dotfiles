@@ -26,7 +26,7 @@ Plug 'tmhedberg/SimpylFold'
 Plug 'vim-scripts/indentpython.vim'
 
 " YouCompleteMe -- code completion https://github.com/Valloric/YouCompleteMe
-Plug 'Valloric/YouCompleteMe', { 'do': './install.py' }
+Plug 'Valloric/YouCompleteMe', { 'do': './install.py', 'for': 'python' }
 
 call plug#end()
 
@@ -51,6 +51,14 @@ let g:SimpylFold_docstring_preview = 1  " Preview fold
 " https://realpython.com/blog/python/vim-and-python-a-match-made-in-heaven/
 let g:ycm_autoclose_preview_window_after_completion=1
 map <leader>g  :YcmCompleter GoToDefinitionElseDeclaration<CR>
+
+" YCM Customization from DjangoProject https://code.djangoproject.com/wiki/UsingVimWithDjango
+let g:ycm_collect_identifiers_from_tags_files = 1 " Let YCM read tags from Ctags file
+let g:ycm_use_ultisnips_completer = 1 " Default 1, just ensure
+let g:ycm_seed_identifiers_with_syntax = 1 " Completion for programming language's keyword
+let g:ycm_complete_in_comments = 1 " Completion in comments
+let g:ycm_complete_in_strings = 1 " Completion in string
+
 
 " Support for virtualenv in YCM
 py << EOF
@@ -83,3 +91,9 @@ au BufNewFile,BufRead *.js, *.html, *.css
     \ set softtabstop=2
     \ set shiftwidth=2
 
+" Statusline
+set statusline=%t           " tail of filename
+"set statusline+=\ [%{strlen(&fenc)?&fenc:'none'}, " file encoding
+"set statusline+=%{&ff}]     " file format
+set statusline+=\ %y
+set statusline+=\ %{fugitive#statusline()}
