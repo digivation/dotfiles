@@ -37,7 +37,7 @@ colorscheme solarized
 set number
 set cursorline
 set ruler
-set expandtab
+"set expandtab
 set shiftwidth=4
 set softtabstop=4
 
@@ -80,6 +80,7 @@ au BufNewFile,BufRead *.py
     \ set expandtab |
     \ set autoindent |
     \ set fileformat=unix |
+    \ let python_highlight_all = 1 |
 
 " Flag python whitespace
 highlight BadWhitespace ctermbg=red guibg=darkred
@@ -87,9 +88,10 @@ au BufRead,BufNewFile *.py,*.pyw,*.c,*.h match BadWhitespace /\s\+$/
 
 " WebDev Indentation Settings
 au BufNewFile,BufRead *.js, *.html, *.css
-    \ set tabstop=2
-    \ set softtabstop=2
-    \ set shiftwidth=2
+    \ set tabstop=2 |
+    \ set softtabstop=2 |
+    \ set shiftwidth=2 |
+    \ set autoindent |
 
 " Statusline
 set statusline=%t           " tail of filename
