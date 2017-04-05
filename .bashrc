@@ -10,6 +10,9 @@ shopt -s checkwinsize
 # Git helper
 . /usr/share/git/completion/git-prompt.sh
 
+# Tmux X11 Display Setter
+. ~/.dotfiles/bin/update-x11-forwarding.sh
+
 export GIT_PS1_SHOWDIRTYSTATE=1
 
 alias ls='ls --color=auto'
