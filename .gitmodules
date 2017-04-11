@@ -1,3 +1,6 @@
 [submodule "dotbot"]
 	path = dotbot
 	url = https://github.com/anishathalye/dotbot
+[submodule "gimp/GIMP-Scripts"]
+	path = gimp/GIMP-Scripts
+	url = https://github.com/pixlsus/GIMP-Scripts.git
