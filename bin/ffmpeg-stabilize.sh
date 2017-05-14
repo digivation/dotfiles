@@ -5,6 +5,7 @@
 #
 # ARG_OPTIONAL_SINGLE([output_file], [o], [Output Video file name])
 # ARG_POSITIONAL_SINGLE([input_file], [Input Video], )
+# ARG_OPTIONAL_SINGLE([shakiness], ,[Shakiness of source, 1 is smallest, 10 is max], [5])
 # ARG_HELP([The general script's help msg])
 # ARGBASH_GO
 
@@ -37,8 +38,10 @@
 #   mincontrast     float(0,1), threshold for local measurement. default 0.3
 #   tripod          reference frame # for tripod mode, count starts at 1. sets "static" scene to reference all stabilization to. 0 = disabled
 #   show            integer(0,2) generate visualization?
-TRANSFORM_RESULTS="xyz_transform.trf"
-SHAKE_FACTOR="5"
+NEW_UUID=$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 8 | head -n 1)
+TRANSFORM_RESULTS="$1_transform.trf"
+#SHAKE_FACTOR="5"
+SHAKE_FACTOR=$_arg_shakiness
 ACCURACY_FACTOR="15"
 STEPSIZE="6"
 MINCONTRAST="0.3"
@@ -98,7 +101,7 @@ echo "Transform Options: $VIDSTAB_PHASE2_OPTS"
 #   chroma_msize_y  int(3,23) - chroma matrix vertical, must be odd, default 5
 #   chroma_amount   float(-1.5,1.5) - strength of chroma effect - positive sharpens, negative blurs
 #   opencl          int(0,1) - if 1, enable OpenCL
-OPENCL=1
+OPENCL=0 # OpenCL is disabled in current FFMPEG builds
 UNSHARP_OPTS="5:5:0.8:3:3:0.4:$OPENCL"
 
 echo "Unsharp Options: $UNSHARP_OPTS"
@@ -125,11 +128,14 @@ EXTRA_FFMPEG_FLAGS="-acodec copy"
 
 echo "Extra FFMPEG Flags: $EXTRA_FFMPEG_FLAGS"
 
-INPUT_VIDEO=$1
-OUTPUT_VIDEO=$2
+INPUT_VIDEO="$_arg_input_video"
+OUTPUT_VIDEO="$_arg_output_video"
 
 echo "Assembled Phase 1 Command: ffmpeg -i $INPUT_VIDEO -vf vidstabdetect=$VIDSTAB_PHASE1_OPTS -f null -"
+ffmpeg -i $INPUT_VIDEO -vf vidstabdetect=$VIDSTAB_PHASE1_OPTS -f null -
 echo "Assembled Phase 2 Command: ffmpeg -i $INPUT_VIDEO -vf vidstabtransform=$VIDSTAB_PHASE2_OPTS,unsharp=$UNSHARP_OPTS $EXTRA_FFMPEG_FLAGS $OUTPUT_VIDEO"
-
+ffmpeg -i $INPUT_VIDEO -vf vidstabtransform=$VIDSTAB_PHASE2_OPTS,unsharp=$UNSHARP_OPTS $EXTRA_FFMPEG_FLAGS $OUTPUT_VIDEO
+echo "Removing transform file"
+rm $TRANSFORM_RESULTS
 # ] <-- needed because of Argbash
 
