@@ -3,10 +3,11 @@
 # This is a rather minimal example Argbash potential
 # Example taken from http://argbash.readthedocs.io/en/stable/example.html
 #
-# ARG_OPTIONAL_SINGLE([output_file],[o],[Output Video file name])
 # ARG_POSITIONAL_SINGLE([input_file],[Input Video],[])
+# ARG_OPTIONAL_SINGLE([output_file],[o],[Output Video file name])
 # ARG_OPTIONAL_SINGLE([shake],[],[Shakiness of source, 1 is smallest, 10 is max],[5])
 # ARG_OPTIONAL_SINGLE([smooth],[],[Smoothing to apply to output, bigger is smoother],[10])
+# ARG_OPTIONAL_SINGLE([phase],[],[Do first or second pass])
 # ARG_HELP([The general script's help msg])
 # ARGBASH_GO()
 # needed because of Argbash --> m4_ignore([
@@ -40,15 +41,17 @@ _positionals=()
 _arg_output_file=
 _arg_shake="5"
 _arg_smooth="10"
+_arg_phase=
 
 print_help ()
 {
 	echo "The general script's help msg"
-	printf 'Usage: %s [-o|--output_file <arg>] [--shake <arg>] [--smooth <arg>] [-h|--help] <input_file>\n' "$0"
+	printf 'Usage: %s [-o|--output_file <arg>] [--shake <arg>] [--smooth <arg>] [--phase <arg>] [-h|--help] <input_file>\n' "$0"
 	printf "\t%s\n" "<input_file>: Input Video"
 	printf "\t%s\n" "-o,--output_file: Output Video file name (no default)"
 	printf "\t%s\n" "--shake: Shakiness of source, 1 is smallest, 10 is max (default: '"5"')"
 	printf "\t%s\n" "--smooth: Smoothing to apply to output, bigger is smoother (default: '"10"')"
+	printf "\t%s\n" "--phase: Do first or second pass (no default)"
 	printf "\t%s\n" "-h,--help: Prints help"
 }
 
@@ -92,6 +95,16 @@ do
 				shift
 			fi
 			_arg_smooth="$_val"
+			;;
+		--phase|--phase=*)
+			_val="${_key##--phase=}"
+			if test "$_val" = "$_key"
+			then
+				test $# -lt 2 && die "Missing value for the optional argument '$_key'." 1
+				_val="$2"
+				shift
+			fi
+			_arg_phase="$_val"
 			;;
 		-h*|--help)
 			print_help
@@ -149,7 +162,7 @@ done
 NEW_UUID=$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 8 | head -n 1)
 TRANSFORM_RESULTS="$_arg_input_file-transform.trf"
 #SHAKE_FACTOR="5"
-SHAKE_FACTOR="$arg_shake"
+SHAKE_FACTOR="$_arg_shake"
 ACCURACY_FACTOR="15"
 STEPSIZE="6"
 MINCONTRAST="0.3"
@@ -240,11 +253,20 @@ echo "Extra FFMPEG Flags: $EXTRA_FFMPEG_FLAGS"
 INPUT_VIDEO="$_arg_input_file"
 OUTPUT_VIDEO="$_arg_output_file"
 
-echo "Assembled Phase 1 Command: ffmpeg -i $INPUT_VIDEO -vf vidstabdetect=$VIDSTAB_PHASE1_OPTS -f null -"
-ffmpeg -i $INPUT_VIDEO -vf vidstabdetect=$VIDSTAB_PHASE1_OPTS -f null -
-echo "Assembled Phase 2 Command: ffmpeg -i $INPUT_VIDEO -vf vidstabtransform=$VIDSTAB_PHASE2_OPTS,unsharp=$UNSHARP_OPTS $EXTRA_FFMPEG_FLAGS $OUTPUT_VIDEO"
-ffmpeg -i $INPUT_VIDEO -vf vidstabtransform=$VIDSTAB_PHASE2_OPTS,unsharp=$UNSHARP_OPTS $EXTRA_FFMPEG_FLAGS $OUTPUT_VIDEO
-echo "Removing transform file"
-rm $TRANSFORM_RESULTS
+if [ "$_arg_phase" != "" -a "$_arg_phase" == "1" ]; then
+    echo "Assembled Phase 1 Command: ffmpeg -i $INPUT_VIDEO -vf vidstabdetect=$VIDSTAB_PHASE1_OPTS -f null -"
+    ffmpeg -i $INPUT_VIDEO -vf vidstabdetect=$VIDSTAB_PHASE1_OPTS -f null -
+fi
+
+if [ "$_arg_phase" != "" -a "$_arg_phase" == "2" ]; then
+    echo "Assembled Phase 2 Command: ffmpeg -i $INPUT_VIDEO -vf vidstabtransform=$VIDSTAB_PHASE2_OPTS,unsharp=$UNSHARP_OPTS $EXTRA_FFMPEG_FLAGS $OUTPUT_VIDEO"
+    ffmpeg -i $INPUT_VIDEO -vf vidstabtransform=$VIDSTAB_PHASE2_OPTS,unsharp=$UNSHARP_OPTS $EXTRA_FFMPEG_FLAGS $OUTPUT_VIDEO
+fi
+
+if [ "$_arg_phase" != "" ]; then
+    echo "Removing transform file"
+    rm $TRANSFORM_RESULTS
+fi
+
 
 # ] <-- needed because of Argbash
