@@ -57,5 +57,12 @@ alias sswap='~/.dotfiles/bin/solarizedswap.sh'
 # Export for Systemd User
 dbus-update-activation-environment --systemd --all
 
+# Flutter path
+export PATH=/home/matthew/Development/flutter/bin:$PATH
+
 # Ignore jrnl entries
 HISTIGNORE="jrnl *"
+
+# VirtualEnvWrapper
+export WORKON_HOME=~/.virtualenvs
+source /usr/bin/virtualenvwrapper.sh
