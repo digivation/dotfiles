@@ -14,14 +14,10 @@ Plug 'tpope/vim-sensible'
 Plug 'tpope/vim-fugitive'
 
 " vim-markdown -- Highlighting and filetype for Markdown
-"Plug 'tpope/vim-markdown'
+Plug 'tpope/vim-markdown'
 
 " vim-vinegar -- File browsing assistance
 Plug 'tpope/vim-vinegar'
-
-" vim-markdown -- Beter Markdown support? Req. Tabular
-Plug 'godlygeek/tabular'
-Plug 'plasticboy/vim-markdown'
 
 " SimplyIFold -- python folding
 Plug 'tmhedberg/SimpylFold'
@@ -31,9 +27,6 @@ Plug 'vim-scripts/indentpython.vim'
 
 " YouCompleteMe -- code completion https://github.com/Valloric/YouCompleteMe
 Plug 'Valloric/YouCompleteMe', { 'do': './install.py', 'for': 'python' }
-
-" vim-hugo-helper -- for Hugo posts
-Plug 'robertbasic/vim-hugo-helper', { 'for': 'markdown' }
 
 call plug#end()
 
@@ -106,17 +99,3 @@ set statusline=%t           " tail of filename
 "set statusline+=%{&ff}]     " file format
 set statusline+=\ %y
 set statusline+=\ %{fugitive#statusline()}
-
-" vim-markdown config
-let g:vim_markdown_folding_disabled = 1
-let g:vim_markdown_frontmatter = 1
-
-"" Netwr customizations
-let g:netrw_liststyle = 3
-let g:netrw_browse_split = 4
-let g:netrw_winsize = 20
-let g:netrw_altv = 1
-"augroup ProjectDrawer
-"    autocmd!
-"    autocmd VimEnter * :Vexplore
-"augroup END
