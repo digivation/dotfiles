@@ -263,7 +263,7 @@ if [ "$_arg_phase" != "" -a "$_arg_phase" == "2" ]; then
     ffmpeg -i $INPUT_VIDEO -vf vidstabtransform=$VIDSTAB_PHASE2_OPTS,unsharp=$UNSHARP_OPTS $EXTRA_FFMPEG_FLAGS $OUTPUT_VIDEO
 fi
 
-if [ "$_arg_phase" != "" ]; then
+if [ "$_arg_phase" == "" ]; then
     echo "Removing transform file"
     rm $TRANSFORM_RESULTS
 fi
