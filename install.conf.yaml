@@ -10,6 +10,7 @@
     ~/.vimrc: vimrc
     ~/.bashrc: bashrc
     ~/.zshrc: zshrc
+    ~/.tmux.conf: tmuxcolors-dark.conf
 
 - shell:
     - [git submodule update --init --recursive, Installing submodules]
