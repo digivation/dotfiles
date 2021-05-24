@@ -28,3 +28,6 @@
 [submodule "vim/plugged/vim-vinegar"]
 	path = vim/plugged/vim-vinegar
 	url = git@github.com:tpope/vim-vinegar.git
+[submodule "vim/plugged/vim-markdown"]
+	path = vim/plugged/vim-markdown
+	url = git@github.com:plasticboy/vim-markdown.git
