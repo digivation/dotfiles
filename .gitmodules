@@ -1,6 +1,30 @@
 [submodule "dotbot"]
 	path = dotbot
-	url = https://github.com/anishathalye/dotbot
+	url = git@github.com:anishathalye/dotbot.git
 [submodule "gimp/GIMP-Scripts"]
 	path = gimp/GIMP-Scripts
 	url = https://github.com/pixlsus/GIMP-Scripts.git
+[submodule "vim/plugged/SimpylFold"]
+	path = vim/plugged/SimpylFold
+	url = git@github.com:tmhedberg/SimpylFold.git
+[submodule "vim/plugged/YouCompleteMe"]
+	path = vim/plugged/YouCompleteMe
+        url = git@github.com:ycm-core/YouCompleteMe.git
+[submodule "vim/plugged/indentpython.vim"]
+	path = vim/plugged/indentpython.vim
+	url = git@github.com:vim-scripts/indentpython.vim.git
+[submodule "vim/plugged/tabular"]
+	path = vim/plugged/tabular
+	url = git@github.com:godlygeek/tabular.git
+[submodule "vim/plugged/vim-colors-solarized"]
+	path = vim/plugged/vim-colors-solarized
+	url = git@github.com:altercation/vim-colors-solarized.git
+[submodule "vim/plugged/vim-fugitive"]
+	path = vim/plugged/vim-fugitive
+	url = git@github.com:tpope/vim-fugitive.git
+[submodule "vim/plugged/vim-sensible"]
+	path = vim/plugged/vim-sensible
+	url = git@github.com:tpope/vim-sensible.git
+[submodule "vim/plugged/vim-vinegar"]
+	path = vim/plugged/vim-vinegar
+	url = git@github.com:tpope/vim-vinegar.git
