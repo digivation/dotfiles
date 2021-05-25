@@ -1,11 +1,11 @@
-- default:
+- defaults:
     link:
         relink: true
 
 - clean: ['~']
 
 - link:
-    ~/.dotfiles: ''
+  #    ~/.dotfiles: ''
     ~/.vim: vim
     ~/.vimrc: vimrc
     ~/.bashrc: bashrc
