@@ -68,3 +68,8 @@ HISTIGNORE="jrnl *"
 # VirtualEnvWrapper
 export WORKON_HOME=~/.virtualenvs
 source /usr/bin/virtualenvwrapper.sh
+
+# Setup NVM
+if [[ -f "/usr/share/nvm/init-nvm.sh" ]]; then
+    source /usr/share/nvm/init-nvm.sh
+fi
