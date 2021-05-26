@@ -40,7 +40,7 @@ _positionals=()
 # THE DEFAULTS INITIALIZATION - OPTIONALS
 _arg_output_file=
 _arg_shake="5"
-_arg_smooth="10"
+_arg_smooth="15"
 _arg_phase=
 
 print_help ()
@@ -156,7 +156,7 @@ done
 #   shakiness       integer(1,10), how shaky is the source video - 1 is least, 10 max. default 5
 #   accuracy        integer(1,15), how accurage of detection, balance speed. default 15 (max)
 #   stepsize        search region, default 6px
-#   mincontrast     float(0,1), threshold for local measurement. default 0.3
+#   mincontrast     float(0,1), threshold for local measurement. default 0.25
 #   tripod          reference frame # for tripod mode, count starts at 1. sets "static" scene to reference all stabilization to. 0 = disabled
 #   show            integer(0,2) generate visualization?
 NEW_UUID=$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 8 | head -n 1)
@@ -165,7 +165,7 @@ TRANSFORM_RESULTS="$_arg_input_file-transform.trf"
 SHAKE_FACTOR="$_arg_shake"
 ACCURACY_FACTOR="15"
 STEPSIZE="6"
-MINCONTRAST="0.3"
+MINCONTRAST="0.25"
 TRIPOD="0"
 GENERATE_VIZ="0"
 
@@ -177,13 +177,13 @@ echo "Analysis Options: $VIDSTAB_PHASE1_OPTS"
 # 2. Apply transforms and generate smoothed video (vidstabtransform) - phase 2
 #   Options:
 #   input           transforms file from phase 1
-#   smoothing       integer, number of frames (value*2+1) for filtering camera movement. Default = 10, which is 10 before and 10 after; larger values=smoother. 0 = static cam?
+#   smoothing       integer, number of frames (value*2+1) for filtering camera movement. Default = 15, which is 15 before and 15 after; larger values=smoother. 0 = static cam?
 #   optalgo         camera path optimization algorithm; gauss (default), avg
 #   maxshift        maximum pixels to translate frame, default = -1 (no max)
 #   maxangle        maximum angle in deg to rotate frame, default = -1 (no max)
 #   crop            how to handle boarder - 'keep' - hold prior frame; 'black' always fill with black
-#   invert          int(0,1) if 1, invert al transforms
-#   relative        consider transforms relative to prior frame if 1; else absolute. defautl 0, absolute
+#   invert          int(0,1) if 1, invert all transforms
+#   relative        consider transforms relative to prior frame if 1; 0 absolute. defautl 1, relative
 #   zoom            percentage zoom; positive = zoom in, negative = zoom out; default 0
 #   optzoom         set optimal zooming to avoid borders; 0 = disabled, 1 = optimal static zoom; 2 = optimal adaptive zoom
 #   zoomspeed       float(0,5) - percent to zoom per frame (only when optzoom = 2) default 0.25
@@ -197,9 +197,9 @@ MAX_SHIFT="-1"
 MAX_ANGLE="-1"
 CROP="keep"
 INVERT="0"
-RELATIVE_XFORM="0"
+RELATIVE_XFORM="1"
 STD_ZOOM_PERCENT="0"
-ADAPTIVE_ZOOM="0"
+ADAPTIVE_ZOOM="1"
 ZOOMSPEED="0.25"
 INTERPOLATION="bilinear"
 DEBUG="0"
@@ -223,7 +223,7 @@ echo "Transform Options: $VIDSTAB_PHASE2_OPTS"
 #   chroma_msize_y  int(3,23) - chroma matrix vertical, must be odd, default 5
 #   chroma_amount   float(-1.5,1.5) - strength of chroma effect - positive sharpens, negative blurs
 #   opencl          int(0,1) - if 1, enable OpenCL
-OPENCL=0 # OpenCL is disabled in current FFMPEG builds
+OPENCL=1 # OpenCL enabled
 UNSHARP_OPTS="5:5:0.8:3:3:0.4:$OPENCL"
 
 echo "Unsharp Options: $UNSHARP_OPTS"
@@ -246,7 +246,9 @@ echo "Unsharp Options: $UNSHARP_OPTS"
 #       -tune film      ??
 #       -crf 18         ?? lower is better
 
-EXTRA_FFMPEG_FLAGS="-acodec copy"
+#EXTRA_FFMPEG_FLAGS="-acodec copy"
+#EXTRA_FFMPEG_FLAGS="-c:v dnxhd -profile:v dnxhr_lb -c:a pcm_s24le"
+EXTRA_FFMPEG_FLAGS="-c:v dnxhd -profile:v dnxhr_hqx -pix_fmt yuv422p10le -c:a pcm_s24le"
 
 echo "Extra FFMPEG Flags: $EXTRA_FFMPEG_FLAGS"
 
